@@ -8,7 +8,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form class="mx-auto px-3 py-3 shadow w-50 " action="/todo/edited/<%= index %>" method="post">
+    <form class="mx-auto px-3 py-3 shadow w-50 " action="/todo/edited/<%= todoarr._id %>" method="post">
      
         <h1>EditTodo</h1>
         <input value="<%= todoarr.tittle %>" class="form-control mt-3" name="tittle" type="text" placeholder="input">

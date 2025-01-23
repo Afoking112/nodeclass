@@ -18,11 +18,11 @@
             <p><%= element.tittle %></p>
             <p><%= element.input %></p>
             
-              <form action="/todo/delete/<%= index %>" method="post">
+              <form action="/todo/delete/<%= element._id %>" method="post">
         <button class="btn btn-danger">delete</button>
 
      </form>
-     <form action="/todo/edit/<%= index %>" method="get">
+     <form action="/todo/edit/<%= element._id  %>" method="get">
         <button class="btn btn-primary" type="submit">edit</button>
 
      </form>

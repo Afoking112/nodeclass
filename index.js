@@ -1,8 +1,14 @@
 const express = require("express")
 const ejs = require("ejs")
 const app = express()
+const mongoose = require("mongoose")
 
-const arr = []
+const userschema = mongoose.Schema({
+    tittle:{type:String,require:true},
+    input:{type:String,require:true}
+})
+
+const usermodel = mongoose.model("userCollection",userschema)
 let message;
 app.set("view engine","ejs")
 app.use(express.urlencoded({extended:true}))
@@ -13,22 +19,24 @@ app.get("/user",(req,res)=>{
 })
 
 
-app.get("/todo",(req,res)=>{
+app.get("/todo",async(req,res)=>{
+    const arr = await usermodel.find()
     res.render("todo",{arr})
 })
 
-app.post("/user/todo",(req,res)=>{
-    message = ""
+app.post("/user/todo", async(req,res)=> {
+   
     const {tittle,input} =req.body
     if (!tittle || !input) {
         message = "all field are mandatory"
         res.redirect("/todo")
     }else{
-        res.redirect("/todo")
-        arr.push(req.body)
-    console.log(arr);
-
-
+        const user = await usermodel.create(req.body)
+        if(user){
+            res.redirect("/todo")
+            
+        }
+   
     }
 
 
@@ -38,25 +46,59 @@ app.post("/user/todo",(req,res)=>{
 
 
 
-app.post("/todo/delete/:index",(req,res)=>{
-
+app.post("/todo/delete/:id",async(req,res)=>{
+try {
+    const { id } = req.params;
+    await usermodel.findByIdAndDelete(id);
+    res.redirect("/todo");
+} catch (error) {
+    console.log(error);
+    
+}
     console.log(req.params);
-    const{index} = req.params
-    arr.splice(index,1)
-    res.redirect("/todo")
+    
     
 })
-app.get("/todo/edit/:index",(req,res)=>{
-    const {index} = req.params
-    const todoarr = arr[index]
-    res.render("edit",{todoarr,index})
+app.get("/todo/edit/:id",async(req,res)=>{
+    try {
+    const {id} = req.params
+    const todoarr = await usermodel.findById(id)
+    res.render("edit",{todoarr})
+    } catch (error) {
+        console.log(error);
+        
+    }
+   
 })
 
-app.post("/todo/edited/:index",(req,res)=>{
-    const { index } = req.params
-    arr[index] = req.body
-    res.redirect("/todo")
+app.post("/todo/edited/:id",async(req,res)=>{
+    try {
+        const { id } = req.params;
+        const {tittle,input} = req.body;
+        await usermodel.findByIdAndUpdate(id,{tittle,input})
+        res.redirect("/todo")
+    } catch (error) {
+        console.log(error);
+        
+        
+    }
+    
 })
+
+const URI = "mongodb+srv://Afolabi221:afolabi@cluster0.zkv9h.mongodb.net/january-data?retryWrites=true&w=majority&appName=Cluster0"
+const connect = async()=>{
+    try {
+        const connect = await mongoose.connect(URI)
+        if(connect){
+            console.log("connection sucessfully" );
+            
+        }
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+connect()
 const port = 5012
 
 app.listen(port,()=>{
