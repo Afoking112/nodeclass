@@ -13,20 +13,20 @@
         <input class="form-control mt-3" name="input" type="text" placeholder="input2">
         <button class="btn btn-dark" type="submit">click</button>
     </form>
+
+
     <% arr.forEach((element,index) => { %>
         <div class="mx-auto px-3 py-3 shadow w-50">
             <p><%= element.tittle %></p>
             <p><%= element.input %></p>
             
               <form action="/todo/delete/<%= element._id %>" method="post">
-        <button class="btn btn-danger">delete</button>
-
-     </form>
+              <button class="btn btn-danger">delete</button>
+              </form>
      <form action="/todo/edit/<%= element._id  %>" method="get">
         <button class="btn btn-primary" type="submit">edit</button>
-
      </form>
-        </div>
+    </div>
      
    
 

@@ -2,16 +2,18 @@ const express = require("express")
 const ejs = require("ejs")
 const app = express()
 const mongoose = require("mongoose")
+require("dotenv").config()
+const connect = require("./Dbconfig/Db.connect")
+const userrouter = require("./Routes/User.routes")
 
-const userschema = mongoose.Schema({
-    tittle:{type:String,require:true},
-    input:{type:String,require:true}
-})
 
-const usermodel = mongoose.model("userCollection",userschema)
+
 let message;
 app.set("view engine","ejs")
 app.use(express.urlencoded({extended:true}))
+app.use("/", userrouter)
+
+
 
 
 app.get("/user",(req,res)=>{
@@ -19,10 +21,7 @@ app.get("/user",(req,res)=>{
 })
 
 
-app.get("/todo",async(req,res)=>{
-    const arr = await usermodel.find()
-    res.render("todo",{arr})
-})
+
 
 app.post("/user/todo", async(req,res)=> {
    
@@ -85,20 +84,8 @@ app.post("/todo/edited/:id",async(req,res)=>{
     
 })
 
-const URI = "mongodb+srv://Afolabi221:afolabi@cluster0.zkv9h.mongodb.net/january-data?retryWrites=true&w=majority&appName=Cluster0"
-const connect = async()=>{
-    try {
-        const connect = await mongoose.connect(URI)
-        if(connect){
-            console.log("connection sucessfully" );
-            
-        }
-    } catch (error) {
-        console.log(error);
-        
-    }
-}
 connect()
+
 const port = 5012
 
 app.listen(port,()=>{
